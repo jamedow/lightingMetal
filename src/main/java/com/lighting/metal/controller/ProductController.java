@@ -36,7 +36,7 @@ public class ProductController {
     // ✅ 通用分页查询（类名改 ProductQueryDTO）
     @PostMapping("/page")
     public Result<IPage<Product>> page(@RequestBody ProductQueryDTO dto) {
-        return Result.success(productService.pageProduct(dto));
+        return Result.success(productService.pageList(dto));
     }
 
     // 修改

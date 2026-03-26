@@ -20,13 +20,11 @@ import java.time.LocalDateTime;
 @Service
 public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> implements ProductService {
 
-    private static final String HW_PREFIX = "HW";
+    private static final String PRODUCT_PREFIX = "HW";
 
+    // 新增商品
     @Override
     public boolean addProduct(ProductAddDTO dto) {
-        if (StringUtils.isBlank(dto.getProductNameCn())) {
-            throw new BusinessException("商品中文名称不能为空");
-        }
         Product product = new Product();
         BeanUtils.copyProperties(dto, product);
         product.setProductNo(generateProductNo());
@@ -36,21 +34,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return save(product);
     }
 
-    //  通用分页实现
-    @Override
-    public IPage<Product> pageProduct(ProductQueryDTO dto) {
-        LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
-        // 商品业务条件
-        wrapper.like(StringUtils.isNotBlank(dto.getProductNameCn()), Product::getProductNameCn, dto.getProductNameCn());
-        wrapper.eq(dto.getCategoryId() != null, Product::getCategoryId, dto.getCategoryId());
-        wrapper.eq(dto.getStatus() != null, Product::getStatus, dto.getStatus());
-        wrapper.orderByDesc(Product::getCreateTime);
-
-        // 分页参数从 通用BasePageDTO 中获取
-        Page<Product> page = new Page<>(dto.getCurrent(), dto.getSize());
-        return page(page, wrapper);
-    }
-
+    // 修改商品
     @Override
     public boolean updateProduct(ProductUpdateDTO dto) {
         Product product = getById(dto.getId());
@@ -62,10 +46,24 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
         return updateById(product);
     }
 
+    // 分页查询
+    @Override
+    public IPage<Product> pageList(ProductQueryDTO dto) {
+        LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
+        wrapper.like(StringUtils.isNotBlank(dto.getProductNameCn()), Product::getProductNameCn, dto.getProductNameCn());
+        wrapper.eq(dto.getCategoryId() != null, Product::getCategoryId, dto.getCategoryId());
+        wrapper.eq(dto.getStatus() != null, Product::getStatus, dto.getStatus());
+        wrapper.orderByDesc(Product::getCreateTime);
+
+        Page<Product> page = new Page<>(dto.getCurrent(), dto.getSize());
+        return page(page, wrapper);
+    }
+
+    // 生成商品编号
     private String generateProductNo() {
         long timestamp = System.currentTimeMillis();
-        int randomNum = RandomUtils.nextInt(1, 999);
-        String randomStr = StringUtils.leftPad(String.valueOf(randomNum), 3, "0");
-        return HW_PREFIX + timestamp + randomStr;
+        int random = RandomUtils.nextInt(1, 999);
+        String randomStr = StringUtils.leftPad(String.valueOf(random), 3, "0");
+        return PRODUCT_PREFIX + timestamp + randomStr;
     }
 }
