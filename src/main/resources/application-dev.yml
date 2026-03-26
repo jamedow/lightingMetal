@@ -2,7 +2,7 @@ spring:
   # 数据库配置
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://106.14.210.31:3306/lighting_metal?useUnicode=true&characterEncoding=utf8mb4&useSSL=false&serverTimezone=GMT%2B8
+    url: jdbc:mysql://106.14.210.31:3306/lighting_metal?useUnicode=true&characterEncoding=utf8&useSSL=false&serverTimezone=GMT%2B8
     username: root  # 替换为你的MySQL用户名
     password: Zhangliang@520  # 替换为你的MySQL密码
   # Redis配置
