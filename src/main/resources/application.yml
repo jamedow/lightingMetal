@@ -10,7 +10,7 @@ spring:
 # MyBatis Plus配置
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
-  type-aliases-package: com.leiting.lightingmetal.model.entity
+  type-aliases-package: com.lighting.metal.model.entity
   configuration:
     map-underscore-to-camel-case: true  # 下划线转驼峰
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl  # 打印SQL日志（开发环境）

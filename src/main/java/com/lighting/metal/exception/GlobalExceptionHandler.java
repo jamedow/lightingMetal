@@ -1,7 +1,7 @@
 package com.lighting.metal.exception;
 
-import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -59,7 +59,7 @@ public class GlobalExceptionHandler {
         log.error("系统异常：{}", e.getMessage(), e);
         Map<String, Object> result = new HashMap<>();
         result.put("code", 500);
-        result.put("msg", StrUtil.isBlank(e.getMessage()) ? "服务器内部错误" : e.getMessage());
+        result.put("msg", StringUtils.isBlank(e.getMessage()) ? "服务器内部错误" : e.getMessage());
         result.put("data", null);
         return result;
     }
