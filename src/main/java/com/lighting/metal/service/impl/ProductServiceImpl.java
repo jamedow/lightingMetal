@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.lighting.metal.enums.ProductCategoryEnum;
+import com.lighting.metal.enums.ProductTypeEnum;
 import com.lighting.metal.enums.ProductMaterialEnum;
 import com.lighting.metal.exception.BusinessException;
 import com.lighting.metal.mapper.ProductMapper;
@@ -13,7 +13,6 @@ import com.lighting.metal.model.dto.ProductQueryDTO;
 import com.lighting.metal.model.dto.ProductUpdateDTO;
 import com.lighting.metal.model.entity.Product;
 import com.lighting.metal.service.ProductService;
-import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
@@ -28,7 +27,7 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public boolean addProduct(ProductAddDTO dto) {
         // ========== 枚举使用：校验前端传入的编码是否合法 ==========
-        if (ProductCategoryEnum.getByCode(dto.getCategoryCode()) == null) {
+        if (ProductTypeEnum.getByCode(dto.getCategoryCode()) == null) {
             throw new BusinessException("非法的商品品类编码");
         }
         if (ProductMaterialEnum.getByCode(dto.getMaterialCode()) == null) {
@@ -60,9 +59,13 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     @Override
     public IPage<Product> pageList(ProductQueryDTO dto) {
         LambdaQueryWrapper<Product> wrapper = new LambdaQueryWrapper<>();
+        // 商品名称模糊查询
         wrapper.like(StringUtils.isNotBlank(dto.getProductNameCn()), Product::getProductNameCn, dto.getProductNameCn());
+        // 按分类ID筛选（核心：客户前端选分类自动过滤）
         wrapper.eq(dto.getCategoryId() != null, Product::getCategoryId, dto.getCategoryId());
+        // 状态筛选
         wrapper.eq(dto.getStatus() != null, Product::getStatus, dto.getStatus());
+        // 按创建时间倒序
         wrapper.orderByDesc(Product::getCreateTime);
 
         Page<Product> page = new Page<>(dto.getCurrent(), dto.getSize());

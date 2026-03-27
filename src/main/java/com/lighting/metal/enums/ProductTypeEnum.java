@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public enum ProductCategoryEnum {
+public enum ProductTypeEnum {
     FASTENER("01", "紧固件"),
     HARDWARE_PART("02", "五金配件"),
     TOOL("03", "五金工具"),
@@ -17,8 +17,8 @@ public enum ProductCategoryEnum {
     private final String name;
 
     // 【通用方法】根据code获取枚举，校验参数用
-    public static ProductCategoryEnum getByCode(String code) {
-        for (ProductCategoryEnum enums : values()) {
+    public static ProductTypeEnum getByCode(String code) {
+        for (ProductTypeEnum enums : values()) {
             if (enums.getCode().equals(code)) {
                 return enums;
             }
