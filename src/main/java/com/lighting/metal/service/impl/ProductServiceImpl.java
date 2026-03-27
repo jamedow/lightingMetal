@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.lighting.metal.enums.ProductCategoryEnum;
+import com.lighting.metal.enums.ProductMaterialEnum;
 import com.lighting.metal.exception.BusinessException;
 import com.lighting.metal.mapper.ProductMapper;
 import com.lighting.metal.model.dto.ProductAddDTO;
@@ -25,6 +27,14 @@ public class ProductServiceImpl extends ServiceImpl<ProductMapper, Product> impl
     // 新增商品
     @Override
     public boolean addProduct(ProductAddDTO dto) {
+        // ========== 枚举使用：校验前端传入的编码是否合法 ==========
+        if (ProductCategoryEnum.getByCode(dto.getCategoryCode()) == null) {
+            throw new BusinessException("非法的商品品类编码");
+        }
+        if (ProductMaterialEnum.getByCode(dto.getMaterialCode()) == null) {
+            throw new BusinessException("非法的商品材质编码");
+        }
+
         Product product = new Product();
         BeanUtils.copyProperties(dto, product);
         product.setProductNo(generateProductNo(dto));
