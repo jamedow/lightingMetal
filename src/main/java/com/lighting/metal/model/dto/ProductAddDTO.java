@@ -46,6 +46,12 @@ public class ProductAddDTO {
     @NotNull(message = "商品库存不能为空")
     private Integer stock;
 
+    @NotBlank(message = "品类编码不能为空")
+    private String categoryCode;  // 2位品类码：01=紧固件
+
+    @NotBlank(message = "材质编码不能为空")
+    private String materialCode;  // 2位材质码：SS=不锈钢
+
     /**
      * 海关编码
      */
@@ -67,4 +73,9 @@ public class ProductAddDTO {
      * 英文描述
      */
     private String descriptionEn;
+
+    @NotBlank(message = "厂商编码不能为空")
+    private String supplierCode;  // 3位厂商码
+
+    private String supplierName;  // 厂商名称
 }

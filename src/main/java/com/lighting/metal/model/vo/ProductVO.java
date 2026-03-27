@@ -49,4 +49,8 @@ public class ProductVO {
      * 状态：0-下架 1-上架
      */
     private Integer status;
+
+    private String supplierCode;  // 3位厂商码
+
+    private String supplierName;  // 厂商名称
 }
