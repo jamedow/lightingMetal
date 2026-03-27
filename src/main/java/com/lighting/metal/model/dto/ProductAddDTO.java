@@ -76,6 +76,4 @@ public class ProductAddDTO {
 
     @NotBlank(message = "厂商编码不能为空")
     private String supplierCode;  // 3位厂商码
-
-    private String supplierName;  // 厂商名称
 }

@@ -19,5 +19,4 @@ public class ProductUpdateDTO {
     private Integer status;
     private String remark;
     private String supplierCode;  // 3位厂商码
-    private String supplierName;  // 厂商名称
 }

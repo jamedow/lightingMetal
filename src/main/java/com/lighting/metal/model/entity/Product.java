@@ -17,7 +17,6 @@ public class Product {
     private String productNameEn;  // 英文名称
     private String customsCode;    // 海关编码
     private String supplierCode;   // 厂商编码（3位）
-    private String supplierName;   // 厂商名称
     private BigDecimal price;      // 价格
     private BigDecimal declareValue;// 申报价值
     private Integer stock;         // 库存
