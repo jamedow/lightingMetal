@@ -1,5 +1,6 @@
 package com.lighting.metal.controller;
 
+import com.lighting.metal.model.dto.CartToInquiryDTO;
 import com.lighting.metal.model.dto.InquiryCreateDTO;
 import com.lighting.metal.model.vo.Result;
 import com.lighting.metal.service.InquiryService;
@@ -23,5 +24,10 @@ public class InquiryController {
     @PostMapping("/create")
     public Result<Long> createInquiry(@Valid @RequestBody InquiryCreateDTO dto) {
         return Result.success(inquiryService.createInquiry(dto));
+    }
+
+    @PostMapping("/create/from-cart")
+    public Result<Long> createFromCart(@Valid @RequestBody CartToInquiryDTO dto) {
+        return Result.success(inquiryService.createInquiryFromCart(dto));
     }
 }
