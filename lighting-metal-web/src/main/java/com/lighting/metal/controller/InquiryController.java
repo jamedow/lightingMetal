@@ -18,14 +18,6 @@ public class InquiryController {
     @Resource
     private InquiryService inquiryService;
 
-    /**
-     * 海外客户创建询价单（B2B核心）
-     */
-    @PostMapping("/create")
-    public Result<Long> createInquiry(@Valid @RequestBody InquiryCreateDTO dto) {
-        return Result.success(inquiryService.createInquiry(dto));
-    }
-
     @PostMapping("/create/from-cart")
     public Result<Long> createFromCart(@Valid @RequestBody CartToInquiryDTO dto) {
         return Result.success(inquiryService.createInquiryFromCart(dto));
