@@ -1,15 +1,15 @@
-import { createApp } from 'vue'
-import './style.css'
+import {createApp} from 'vue'
 import App from './App.vue'
-// 引入Element Plus
+
+// Element Plus
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
-// 引入路由
+
+// 路由
 import router from './router'
-// 引入Pinia
-import { createPinia } from 'pinia'
-// 全局样式
-import '@/assets/styles/global.scss'
+
+// Pinia
+import {createPinia} from 'pinia'
 
 const app = createApp(App)
 app.use(ElementPlus)
