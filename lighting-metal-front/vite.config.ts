@@ -6,17 +6,17 @@ export default defineConfig({
   plugins: [vue()],
   resolve: {
     alias: {
-      '@': path.resolve(__dirname, 'src')
+      '@': path.resolve(__dirname, './src')
     }
   },
-  // 🔥 🔥 🔥 绝对生效的代理配置（重点）
   server: {
-    port: 5173, // 前端端口不动
+    port: 5173,
     proxy: {
       '/api': {
-        target: 'http://localhost:8080', // 后端端口
-        changeOrigin: true, // 允许跨域（核心）
-        pathRewrite: {'^/api': ''} // 去掉 /api 前缀
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+        // 🔥 注释掉这一行！因为后端现在带 /api 前缀了
+        // rewrite: (path) => path.replace(/^\/api/, '')
       }
     }
   }

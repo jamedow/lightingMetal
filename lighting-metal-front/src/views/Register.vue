@@ -2,23 +2,61 @@
   <div class="register-page">
     <div class="register-box">
       <h2>用户注册</h2>
-      <el-form ref="formRef" :model="form" label-width="80px" rules="rules">
-        <el-form-item label="邮箱" prop="email">
-          <el-input v-model="form.email" placeholder="请输入您的邮箱地址"/>
+      <el-form ref="formRef" :model="form" :rules="rules" class="register-form" label-width="100px">
+        <!-- 必填表单项 -->
+        <el-form-item label="登录账号" prop="username">
+          <el-input v-model="form.username" placeholder="请输入登录账号"/>
         </el-form-item>
+
         <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" placeholder="设置密码（不少于6位）" type="password"/>
+          <el-input v-model="form.password" placeholder="请输入密码" type="password"/>
         </el-form-item>
+
+        <!-- ✅ 新增：确认密码（前端校验，不提交后端） -->
         <el-form-item label="确认密码" prop="confirmPwd">
-          <el-input v-model="form.confirmPwd" placeholder="再次确认密码" type="password"/>
+          <el-input v-model="form.confirmPwd" placeholder="请再次输入密码" type="password"/>
         </el-form-item>
+
+        <el-form-item label="国家编码" prop="countryCode">
+          <el-input v-model="form.countryCode" placeholder="如：CN / US / GB"/>
+        </el-form-item>
+
+        <el-form-item label="公司名称" prop="companyName">
+          <el-input v-model="form.companyName" placeholder="请输入公司名称"/>
+        </el-form-item>
+
+        <el-form-item label="联系人" prop="contactPerson">
+          <el-input v-model="form.contactPerson" placeholder="请输入联系人"/>
+        </el-form-item>
+
+        <!-- 选填信息 -->
+        <el-divider>选填信息</el-divider>
+
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="form.email" placeholder="请输入邮箱"/>
+        </el-form-item>
+
+        <el-form-item label="手机号码" prop="phone">
+          <el-input v-model="form.phone" placeholder="请输入手机号码"/>
+        </el-form-item>
+
+        <el-form-item label="公司地址" prop="companyAddress">
+          <el-input v-model="form.companyAddress" placeholder="请输入公司地址" rows="2" type="textarea"/>
+        </el-form-item>
+
+        <el-form-item label="税号" prop="taxNumber">
+          <el-input v-model="form.taxNumber" placeholder="请输入税号"/>
+        </el-form-item>
+
+        <!-- 注册按钮 -->
         <el-form-item>
-          <el-button :loading="loading" class="register-btn" type="primary" @click="register">
-            注册
+          <el-button :loading="loading" class="submit-btn" type="primary" @click="register">
+            立即注册
           </el-button>
         </el-form-item>
       </el-form>
-      <div class="link">已有账号？<span @click="$router.push('/login')">立即登录</span></div>
+
+      <div class="link-text">已有账号？<span @click="$router.push('/login')">去登录</span></div>
     </div>
   </div>
 </template>
@@ -27,70 +65,67 @@
 import {reactive, ref} from 'vue'
 import {useRouter} from 'vue-router'
 import {ElMessage} from 'element-plus'
-// 导入注册接口
 import {userRegister} from '@/api/user'
 
 const router = useRouter()
-// 加载状态
 const loading = ref(false)
-// 表单数据
+const formRef = ref()
+
+// 1:1 匹配后端DTO + 前端确认密码字段
 const form = reactive({
-  email: '',
+  username: '',
   password: '',
-  confirmPwd: ''
+  confirmPwd: '', // 👈 仅前端校验，不提交后端
+  countryCode: '',
+  companyName: '',
+  contactPerson: '',
+  email: '',
+  phone: '',
+  companyAddress: '',
+  taxNumber: ''
 })
 
-// 表单验证规则
+// 校验规则（完全对齐后端 + 前端确认密码）
 const rules = {
-  email: [
-    {required: true, message: '请输入邮箱', trigger: 'blur'},
-    {type: 'email', message: '请输入有效的邮箱地址', trigger: 'blur'}
-  ],
-  password: [
-    {required: true, message: '请输入密码', trigger: 'blur'},
-    {min: 6, message: '密码长度不少于6位', trigger: 'blur'}
-  ],
+  username: [{required: true, message: '登录账号不能为空', trigger: 'blur'}],
+  password: [{required: true, message: '密码不能为空', trigger: 'blur'}],
   confirmPwd: [
-    {required: true, message: '请确认密码', trigger: 'blur'},
+    {required: true, message: '确认密码不能为空', trigger: 'blur'},
     {
       validator: (rule, value, callback) => {
-        if (value !== form.password) {
-          callback(new Error('两次输入密码不一致'))
-        } else {
-          callback()
-        }
+        value === form.password ? callback() : callback(new Error('两次输入密码不一致'))
       },
       trigger: 'blur'
     }
-  ]
+  ],
+  countryCode: [{required: true, message: '国家编码不能为空', trigger: 'blur'}],
+  companyName: [{required: true, message: '公司名称不能为空', trigger: 'blur'}],
+  contactPerson: [{required: true, message: '联系人不能为空', trigger: 'blur'}]
 }
 
-// 🔥 核心：对接后端注册接口
+// 注册提交
 const register = async () => {
-  // 前端验证
-  if (!form.email || !form.password || !form.confirmPwd) {
-    ElMessage.warning('请完善注册信息')
-    return
-  }
-  if (form.password !== form.confirmPwd) {
-    ElMessage.error('两次密码不一致')
-    return
-  }
+  // 前端表单校验
+  const valid = await formRef.value?.validate()
+  if (!valid) return
 
   try {
     loading.value = true
-    // 调用后端注册接口
-    const res = await userRegister({
-      email: form.email,
-      password: form.password
-    })
+    // 👈 关键：提交时排除 confirmPwd，只传后端需要的字段
+    const submitData = {...form}
+    delete submitData.confirmPwd
 
-    // 注册成功
-    ElMessage.success('注册成功！请登录')
-    router.push('/login')
-  } catch (err) {
-    // 注册失败（邮箱已存在/服务器错误）
-    console.log(err)
+    // 调用接口
+    await userRegister(submitData)
+
+    // 成功提示
+    ElMessage.success('注册成功！即将跳转到登录页')
+    setTimeout(() => router.push('/login'), 1000)
+  } catch (err: any) {
+    // 👈 关键：完整显示后端错误提示（用户能看到具体问题）
+    const msg = err?.response?.data?.msg || err?.msg || '注册失败，请检查填写信息'
+    ElMessage.error(msg) // 弹出后端返回的真实错误
+    console.error('后端报错：', err) // 控制台日志（开发用）
   } finally {
     loading.value = false
   }
@@ -98,44 +133,50 @@ const register = async () => {
 </script>
 
 <style scoped>
+/* 统一页面样式，无错乱、适配导航栏 */
 .register-page {
-  height: calc(100vh - 60px);
+  min-height: calc(100vh - 60px);
   margin-top: 60px;
   background: #f8f9fa;
   display: flex;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
-
 .register-box {
-  width: 420px;
+  width: 580px;
   background: #fff;
-  padding: 45px;
+  padding: 50px 40px;
   border-radius: 12px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.06);
 }
-
 .register-box h2 {
   text-align: center;
-  margin-bottom: 35px;
-  color: #222;
+  margin-bottom: 30px;
+  color: #333;
+  font-weight: 600;
 }
 
-.register-btn {
+.register-form {
+  width: 100%;
+}
+
+.submit-btn {
   width: 100%;
   height: 46px;
   font-size: 16px;
+  margin-top: 10px;
 }
 
-.link {
+.link-text {
   text-align: center;
-  margin-top: 20px;
+  margin-top: 25px;
   color: #666;
-  cursor: pointer;
   font-size: 14px;
+  cursor: pointer;
 }
 
-.link span {
+.link-text span {
   color: #2d8cf0;
   font-weight: 500;
 }

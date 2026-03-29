@@ -1,16 +1,21 @@
 import axios from 'axios'
-import {ElMessage} from 'element-plus'
 
 const request = axios.create({
-    baseURL: '/api', // 固定写 /api，交给代理转发
-    timeout: 10000
+    baseURL: '/api',
+    timeout: 10000,
+    // ✅ 关键：允许携带 SESSION Cookie
+    withCredentials: true
 })
 
 // 响应拦截
 request.interceptors.response.use(
     (res) => res.data,
     (err) => {
-        ElMessage.error('请求失败：' + (err.message || '网络异常'))
+        // 未登录 → 后端返回401
+        if (err.response?.status === 401) {
+            ElMessage.error('请先登录')
+            router.push('/login')
+        }
         return Promise.reject(err)
     }
 )

@@ -7,11 +7,9 @@ import com.lighting.metal.model.entity.User;
 import com.lighting.metal.model.vo.Result;
 import com.lighting.metal.model.vo.UserLoginVO;
 import com.lighting.metal.service.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.BeanUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import jakarta.validation.Valid;
 
@@ -29,23 +27,35 @@ public class UserController {
      * 海外采购商注册
      */
     @PostMapping("/register")
-    public Result<String> register(@Valid @RequestBody UserRegisterDTO dto) {
-        boolean success = userService.register(dto);
-        return success ? Result.success("注册成功") : Result.fail("注册失败");
+    public Result<?> register(@Valid @RequestBody UserRegisterDTO registerDTO) {
+
+        // 2. 业务逻辑：调用service层完成注册（示例伪代码）
+         userService.register(registerDTO);
+
+        // 3. 返回响应
+        return Result.success("注册提交成功，待审核");
     }
+
 
     /**
      * 登录
      */
     @PostMapping("/login")
-    public Result<UserLoginVO> login(@Valid @RequestBody UserLoginDTO dto) {
+    public Result login(@RequestBody @Valid UserLoginDTO dto, HttpSession session) {
+        // 1. 校验账号密码
         User user = userService.login(dto.getUsername(), dto.getPassword());
 
-        // 构造返回前端的VO
-        UserLoginVO vo = new UserLoginVO();
-        BeanUtils.copyProperties(user, vo);
-        vo.setToken("login-token-" + System.currentTimeMillis()); // 临时token
+        // 2. 登录成功 → 把用户信息存入 SESSION（后端控制）
+        session.setAttribute("loginUser", user);
+        session.setAttribute("userId", user.getId());
 
-        return Result.success(vo);
+        // 3. 自动返回 JSESSIONID Cookie
+        return Result.success("登录成功");
+    }
+
+    @GetMapping("/logout")
+    public Result logout(HttpSession session) {
+        session.invalidate(); // 销毁session
+        return Result.success("退出成功");
     }
 }
