@@ -1,18 +1,39 @@
-import {createRouter, createWebHistory} from 'vue-router'
+import { createRouter, createWebHistory } from 'vue-router'
+// 门户首页
+import HomePage from '@/views/HomePage.vue'
+// 登录、注册（新增）
+import Login from '@/views/Login.vue'
+import Register from '@/views/Register.vue'
+// 后台布局
 import MainLayout from '@/layouts/MainLayout.vue'
 import InquiryList from '@/views/inquiry/InquiryList.vue'
 
 const routes = [
+    // 企业首页
     {
         path: '/',
-        redirect: '/inquiry/list'
+        name: 'Home',
+        component: HomePage
     },
+    // 登录
     {
-        path: '/inquiry',
+        path: '/login',
+        name: 'Login',
+        component: () => import('@/views/Login.vue')
+    },
+    // 注册
+    {
+        path: '/register',
+        name: 'Register',
+        component: () => import('@/views/Register.vue')
+    },
+    // 后台管理
+    {
+        path: '/admin',
         component: MainLayout,
         children: [
             {
-                path: 'list',
+                path: 'inquiry/list',
                 component: InquiryList
             }
         ]

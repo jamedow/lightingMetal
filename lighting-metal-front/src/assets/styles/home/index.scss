@@ -1,0 +1,21 @@
+.home-page {
+  width: 100%;
+  min-height: 100vh;
+  background: #f9f9f9;
+}
+.title {
+  text-align: center;
+  font-size: 28px;
+  margin-bottom: 40px;
+  position: relative;
+  &::after {
+    content: '';
+    width: 60px;
+    height: 4px;
+    background: #2d8cf0;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}

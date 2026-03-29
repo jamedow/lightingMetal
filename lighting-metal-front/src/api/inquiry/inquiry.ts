@@ -1,5 +1,5 @@
 import request from '@/api/index'
-import { Inquiry, InquirySubmitParams } from '@/types/inquiry'
+import type { Inquiry, InquirySubmitParams } from '@/types/inquiry'
 
 // 获取询价单列表
 export function getInquiryList(params: any) {

@@ -3,7 +3,7 @@ export interface Inquiry {
     id?: number
     inquiryNo: string
     supplierId: number
-    inquiryDate: string // 前端用字符串格式（如YYYY-MM-DD）
+    inquiryDate: string
     totalAmount: number
     status: number
     creator: string
@@ -23,7 +23,7 @@ export interface InquiryItem {
     remark?: string
 }
 
-// 新增/编辑询价单提交参数（主表+明细）
+// 提交参数
 export interface InquirySubmitParams {
     main: Inquiry
     items: InquiryItem[]
