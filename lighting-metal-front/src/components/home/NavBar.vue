@@ -1,32 +1,77 @@
 <template>
-  <div class="nav-bar">
-    <div class="nav-logo">Lighting Metal</div>
-    <div class="nav-menu">
-      <span class="active">首页</span>
-      <span>公司介绍</span>
-      <span>商品分类</span>
-      <span>合作商户</span>
-      <span>生产实力</span>
-      <span>联系我们</span>
-    </div>
-    <div class="nav-auth">
-      <el-button link @click="goLogin">登录</el-button>
-      <el-button type="primary" @click="goRegister">注册</el-button>
+  <div class="navbar">
+    <div class="nav-container">
+      <!-- 左侧：首页 -->
+      <div class="nav-left">
+        <div class="nav-home" @click="goHome">首页</div>
+      </div>
+
+      <!-- 右侧：登录 + 注册 按钮 -->
+      <div class="nav-right">
+        <el-button text @click="goLogin">登录</el-button>
+        <el-button type="primary" @click="goRegister">注册</el-button>
+      </div>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-import { useHomeData } from '@/composables/useHomeData'
-const { goLogin, goRegister } = useHomeData()
-</script>
-<style scoped>
-.nav-bar {
-  display: flex; justify-content: space-between; align-items: center;
-  padding: 0 10%; height: 70px; background: #fff;
-  box-shadow: 0 2px 10px rgba(0,0,0,0.1); position: sticky; top: 0; z-index: 999;
+import {useRouter} from 'vue-router'
+
+const router = useRouter()
+
+// 返回首页
+const goHome = () => {
+  router.push('/')
 }
-.nav-logo { font-size: 24px; font-weight: bold; color: #2d8cf0; }
-.nav-menu span { margin-left: 30px; cursor: pointer; }
-.nav-menu .active { color: #2d8cf0; font-weight: bold; }
-.nav-auth :deep(.el-button) { margin-left: 10px; }
+// 去登录页
+const goLogin = () => {
+  router.push('/login')
+}
+// 去注册页
+const goRegister = () => {
+  router.push('/register')
+}
+</script>
+
+<style scoped>
+/* 极简全局导航 固定顶部 */
+.navbar {
+  height: 60px;
+  background: #ffffff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 999;
+}
+
+.nav-container {
+  max-width: 1200px;
+  height: 100%;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+}
+
+/* 首页按钮 */
+.nav-home {
+  font-size: 16px;
+  font-weight: 500;
+  color: #2d8cf0;
+  cursor: pointer;
+}
+
+.nav-home:hover {
+  opacity: 0.8;
+}
+
+/* 右侧按钮间距 */
+.nav-right {
+  display: flex;
+  gap: 12px;
+}
 </style>

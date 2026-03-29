@@ -1,10 +1,13 @@
 <template>
-  <!-- 路由出口：所有页面都在这里渲染 -->
+  <!-- 全局导航栏：所有页面都显示 -->
+  <NavBar/>
+  <!-- 页面内容 -->
   <router-view/>
 </template>
 
-<script lang="ts" setup>
-// 空即可，无需逻辑
+<script setup>
+// 全局导入导航栏
+import NavBar from './components/home/NavBar.vue'
 </script>
 
 <style>
@@ -12,10 +15,5 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-}
-
-body, html, #app {
-  width: 100%;
-  height: 100%;
 }
 </style>

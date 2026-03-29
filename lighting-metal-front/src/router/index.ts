@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 // 门户首页
 import HomePage from '@/views/HomePage.vue'
 // 登录、注册（新增）
@@ -19,13 +19,12 @@ const routes = [
     {
         path: '/login',
         name: 'Login',
-        component: () => import('@/views/Login.vue')
+        component: Login
     },
-    // 注册
     {
         path: '/register',
         name: 'Register',
-        component: () => import('@/views/Register.vue')
+        component: Register
     },
     // 后台管理
     {
